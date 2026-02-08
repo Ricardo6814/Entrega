@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Entrega - Cocos e Produtos</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2a9d8f;
+            --secondary-color: #264653;
+            --accent-color: #e9c46a;
+            --danger-color: #e76f51;
+            --success-color: #2a9d8f;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background-color: var(--secondary-color);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: white !important;
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white !important;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 5px;
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: none;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #238277;
+            border-color: #238277;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-warning {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #333;
+        }
+        
+        .badge-coco {
+            background-color: #8b4513;
+            color: white;
+        }
+        
+        .badge-cana {
+            background-color: #228b22;
+            color: white;
+        }
+        
+        .badge-pacote {
+            background-color: #4169e1;
+            color: white;
+        }
+        
+        .badge-fardo {
+            background-color: #9370db;
+            color: white;
+        }
+        
+        .badge-unidade {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .customer-item {
+            border-left: 5px solid var(--primary-color);
+            padding-left: 15px;
+            margin-bottom: 15px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            background-color: white;
+            border-radius: 5px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .table th {
+            background-color: #f1f5f9;
+        }
+        
+        .total-row {
+            font-weight: bold;
+            background-color: #e8f4f3;
+        }
+        
+        .customer-type-badge {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+        }
+        
+        .whatsapp-btn {
+            background-color: #25D366;
+            color: white;
+            border: none;
+        }
+        
+        .whatsapp-btn:hover {
+            background-color: #1da851;
+            color: white;
+        }
+        
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+        }
+        
+        .status-pendente {
+            background-color: #ffc107;
+            color: #333;
+        }
+        
+        .status-entregue {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .status-nao-retirado {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-truck"></i> Sistema de Entrega
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" onclick="showSection('dashboard')">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('clientes')">
+                            <i class="bi bi-people"></i> Clientes/Hotéis
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('produtos')">
+                            <i class="bi bi-box"></i> Produtos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('entregas')">
+                            <i class="bi bi-truck"></i> Entregas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showSection('relatorios')">
+                            <i class="bi bi-clipboard-data"></i> Relatórios
+                        </a>
+                    </li>
+                </ul>
+                <div class="navbar-text text-white">
+                    <i class="bi bi-calendar-check"></i> <span id="current-date"></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <!-- Dashboard Section -->
+        <section id="dashboard-section">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2><i class="bi bi-speedometer2"></i> Dashboard de Hoje</h2>
+                    <p class="text-muted">Resumo das entregas e status do dia</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card text-white bg-primary">
+                        <div class="card-body">
+                            <h5 class="card-title">Total de Clientes</h5>
+                            <h2 id="total-clientes" class="card-text">0</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-success">
+                        <div class="card-body">
+                            <h5 class="card-title">Entregas de Hoje</h5>
+                            <h2 id="entregas-hoje" class="card-text">0</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-warning">
+                        <div class="card-body">
+                            <h5 class="card-title">Pendentes</h5>
+                            <h2 id="entregas-pendentes" class="card-text">0</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-danger">
+                        <div class="card-body">
+                            <h5 class="card-title">Não Retirados</h5>
+                            <h2 id="nao-retirados" class="card-text">0</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-clock-history"></i> Entregas Recentes
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Cliente</th>
+                                            <th>Produtos</th>
+                                            <th>Data</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="entregas-recentes">
+                                        <!-- Preenchido por JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-exclamation-triangle"></i> Ações Rápidas
+                        </div>
+                        <div class="card-body">
+                            <button class="btn btn-primary w-100 mb-2" onclick="showSection('entregas')">
+                                <i class="bi bi-plus-circle"></i> Nova Entrega
+                            </button>
+                            <button class="btn btn-success w-100 mb-2" onclick="showSection('clientes')">
+                                <i class="bi bi-person-plus"></i> Adicionar Cliente
+                            </button>
+                            <button class="btn btn-warning w-100 mb-2" onclick="enviarLembretes()">
+                                <i class="bi bi-whatsapp"></i> Enviar Lembretes
+                            </button>
+                            <button class="btn btn-danger w-100" onclick="exportarDados()">
+                                <i class="bi bi-download"></i> Exportar Dados
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Clientes/Hotéis Section -->
+        <section id="clientes-section" class="hidden">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2><i class="bi bi-people"></i> Clientes e Hotéis</h2>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addClienteModal">
+                            <i class="bi bi-person-plus"></i> Adicionar Cliente/Hotel
+                        </button>
+                    </div>
+                    <p class="text-muted">Gerencie seus clientes e hotéis para entregas</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-list-ul"></i> Lista de Clientes/Hotéis
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" id="search-cliente" placeholder="Buscar cliente/hotel..." onkeyup="filtrarClientes()">
+                                </div>
+                                <div class="col-md-3">
+                                    <select class="form-select" id="filter-tipo-cliente" onchange="filtrarClientes()">
+                                        <option value="todos">Todos os tipos</option>
+                                        <option value="cliente">Cliente</option>
+                                        <option value="hotel">Hotel</option>
+                                        <option value="restaurante">Restaurante</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-secondary w-100" onclick="resetFiltros()">
+                                        <i class="bi bi-arrow-clockwise"></i> Limpar Filtros
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>Tipo</th>
+                                            <th>Contato</th>
+                                            <th>Última Entrega</th>
+                                            <th>Status</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="clientes-table">
+                                        <!-- Preenchido por JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Produtos Section -->
+        <section id="produtos-section" class="hidden">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2><i class="bi bi-box"></i> Produtos</h2>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProdutoModal">
+                            <i class="bi bi-plus-circle"></i> Adicionar Produto
+                        </button>
+                    </div>
+                    <p class="text-muted">Gerencie os produtos disponíveis para entrega</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-box-seam"></i> Lista de Produtos
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Produto</th>
+                                            <th>Tipo de Medida</th>
+                                            <th>Preço Unitário</th>
+                                            <th>Em Estoque</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="produtos-table">
+                                        <!-- Preenchido por JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Entregas Section -->
+        <section id="entregas-section" class="hidden">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2><i class="bi bi-truck"></i> Controle de Entregas</h2>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEntregaModal">
+                            <i class="bi bi-plus-circle"></i> Nova Entrega
+                        </button>
+                    </div>
+                    <p class="text-muted">Registre e acompanhe as entregas do dia</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-calendar-day"></i> Entregas de Hoje
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Cliente</th>
+                                            <th>Produtos</th>
+                                            <th>Quantidade</th>
+                                            <th>Status</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="entregas-hoje-table">
+                                        <!-- Preenchido por JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-calculator"></i> Resumo do Dia
+                        </div>
+                        <div class="card-body">
+                            <div id="resumo-dia">
+                                <!-- Preenchido por JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-3">
+                        <div class="card-header bg-warning">
+                            <i class="bi bi-exclamation-triangle"></i> Clientes sem Retirada
+                        </div>
+                        <div class="card-body">
+                            <div id="clientes-sem-retirada">
+                                <!-- Preenchido por JavaScript -->
+                            </div>
+                            <button class="btn btn-warning w-100 mt-2" onclick="enviarLembretes()">
+                                <i class="bi bi-whatsapp"></i> Enviar Lembretes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Relatórios Section -->
+        <section id="relatorios-section" class="hidden">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2><i class="bi bi-clipboard-data"></i> Relatórios</h2>
+                    <p class="text-muted">Relatórios e estatísticas das entregas</p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-calendar-month"></i> Relatório por Período
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label>Data Inicial</label>
+                                <input type="date" class="form-control" id="data-inicial">
+                            </div>
+                            <div class="mb-3">
+                                <label>Data Final</label>
+                                <input type="date" class="form-control" id="data-final">
+                            </div>
+                            <button class="btn btn-primary w-100" onclick="gerarRelatorioPeriodo()">
+                                Gerar Relatório
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-bar-chart"></i> Estatísticas
+                        </div>
+                        <div class="card-body">
+                            <div id="relatorio-conteudo">
+                                <p class="text-center text-muted">Selecione um período para gerar o relatório</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-file-earmark-text"></i> Relatório de Produtos Mais Vendidos
+                        </div>
+                        <div class="card-body">
+                            <div id="relatorio-produtos">
+                                <!-- Preenchido por JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal: Adicionar Cliente/Hotel -->
+    <div class="modal fade" id="addClienteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Cliente/Hotel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-cliente">
+                        <div class="mb-3">
+                            <label class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="cliente-nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo</label>
+                            <select class="form-select" id="cliente-tipo" required>
+                                <option value="cliente">Cliente</option>
+                                <option value="hotel">Hotel</option>
+                                <option value="restaurante">Restaurante</option>
+                                <option value="bar">Bar</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Telefone (WhatsApp)</label>
+                            <input type="tel" class="form-control" id="cliente-telefone" placeholder="(11) 99999-9999">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Endereço</label>
+                            <textarea class="form-control" id="cliente-endereco" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Observações</label>
+                            <textarea class="form-control" id="cliente-observacoes" rows="2"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="salvarCliente()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Adicionar Produto -->
+    <div class="modal fade" id="addProdutoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Adicionar Produto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-produto">
+                        <div class="mb-3">
+                            <label class="form-label">Nome do Produto</label>
+                            <select class="form-select" id="produto-nome" required>
+                                <option value="">Selecione...</option>
+                                <option value="Coco">Coco (unidade)</option>
+                                <option value="Cana">Cana (pacote)</option>
+                                <option value="Copo 300ml">Copo 300ml (pacote)</option>
+                                <option value="Copo 500ml">Copo 500ml (pacote)</option>
+                                <option value="Garrafa 300ml">Garrafa 300ml (fardo)</option>
+                                <option value="Garrafa 500ml">Garrafa 500ml (fardo)</option>
+                                <option value="Canudo">Canudo (pacote)</option>
+                                <option value="Qboa">Qboa (unidade)</option>
+                                <option value="Detergente">Detergente (unidade)</option>
+                                <option value="Saco alvejado">Saco alvejado (unidade)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Medida</label>
+                            <select class="form-select" id="produto-medida" required>
+                                <option value="unidade">Unidade</option>
+                                <option value="pacote">Pacote</option>
+                                <option value="fardo">Fardo</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Preço Unitário (R$)</label>
+                            <input type="number" class="form-control" id="produto-preco" step="0.01" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Quantidade em Estoque</label>
+                            <input type="number" class="form-control" id="produto-estoque" min="0" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="salvarProduto()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Nova Entrega -->
+    <div class="modal fade" id="addEntregaModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nova Entrega</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-entrega">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Cliente/Hotel</label>
+                                <select class="form-select" id="entrega-cliente" required onchange="carregarHistoricoCliente()">
+                                    <option value="">Selecione...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Data da Entrega</label>
+                                <input type="date" class="form-control" id="entrega-data" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <h6>Produtos</h6>
+                                <div id="produtos-selecao">
+                                    <!-- Produtos serão adicionados dinamicamente -->
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="adicionarProdutoSelecao()">
+                                    <i class="bi bi-plus"></i> Adicionar Produto
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Observações</label>
+                            <textarea class="form-control" id="entrega-observacoes" rows="2"></textarea>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> A entrega será marcada como "pendente" inicialmente. Você pode atualizar o status depois.
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="salvarEntrega()">Salvar Entrega</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Detalhes da Entrega -->
+    <div class="modal fade" id="detalhesEntregaModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalhes da Entrega</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="detalhes-entrega-conteudo">
+                    <!-- Preenchido por JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script>
+        // Variáveis globais
+        let clientes = [];
+        let produtos = [];
+        let entregas = [];
+        let currentSection = 'dashboard';
+        
+        // Inicializar data atual
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('pt-BR');
+        document.getElementById('entrega-data').valueAsDate = new Date();
+        document.getElementById('data-inicial').valueAsDate = new Date();
+        document.getElementById('data-final').valueAsDate = new Date();
+        
+        // Carregar dados do localStorage
+        function carregarDados() {
+            const clientesSalvos = localStorage.getItem('sistemaEntregasClientes');
+            const produtosSalvos = localStorage.getItem('sistemaEntregasProdutos');
+            const entregasSalvas = localStorage.getItem('sistemaEntregasEntregas');
+            
+            if (clientesSalvos) clientes = JSON.parse(clientesSalvos);
+            if (produtosSalvos) produtos = JSON.parse(produtosSalvos);
+            if (entregasSalvas) entregas = JSON.parse(entregasSalvas);
+            
+            // Se não houver produtos, adicionar os padrões
+            if (produtos.length === 0) {
+                produtos = [
+                    { id: 1, nome: "Coco", medida: "unidade", preco: 3.50, estoque: 100 },
+                    { id: 2, nome: "Cana", medida: "pacote", preco: 8.00, estoque: 50 },
+                    { id: 3, nome: "Copo 300ml", medida: "pacote", preco: 12.00, estoque: 40 },
+                    { id: 4, nome: "Copo 500ml", medida: "pacote", preco: 15.00, estoque: 35 },
+                    { id: 5, nome: "Garrafa 300ml", medida: "fardo", preco: 45.00, estoque: 20 },
+                    { id: 6, nome: "Garrafa 500ml", medida: "fardo", preco: 60.00, estoque: 18 },
+                    { id: 7, nome: "Canudo", medida: "pacote", preco: 5.00, estoque: 80 },
+                    { id: 8, nome: "Qboa", medida: "unidade", preco: 7.50, estoque: 30 },
+                    { id: 9, nome: "Detergente", medida: "unidade", preco: 4.50, estoque: 45 },
+                    { id: 10, nome: "Saco alvejado", medida: "unidade", preco: 25.00, estoque: 25 }
+                ];
+                salvarProdutos();
+            }
+            
+            atualizarDashboard();
+            renderizarClientes();
+            renderizarProdutos();
+            renderizarEntregasHoje();
+            carregarSelectClientes();
+            carregarSelectProdutos();
+        }
+        
+        // Salvar dados no localStorage
+        function salvarClientes() {
+            localStorage.setItem('sistemaEntregasClientes', JSON.stringify(clientes));
+        }
+        
+        function salvarProdutos() {
+            localStorage.setItem('sistemaEntregasProdutos', JSON.stringify(produtos));
+        }
+        
+        function salvarEntregas() {
+            localStorage.setItem('sistemaEntregasEntregas', JSON.stringify(entregas));
+        }
+        
+        // Navegação entre seções
+        function showSection(section) {
+            // Esconder todas as seções
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('clientes-section').classList.add('hidden');
+            document.getElementById('produtos-section').classList.add('hidden');
+            document.getElementById('entregas-section').classList.add('hidden');
+            document.getElementById('relatorios-section').classList.add('hidden');
+            
+            // Mostrar a seção selecionada
+            document.getElementById(section + '-section').classList.remove('hidden');
+            currentSection = section;
+            
+            // Atualizar nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Atualizar dados da seção
+            if (section === 'dashboard') atualizarDashboard();
+            if (section === 'clientes') renderizarClientes();
+            if (section === 'produtos') renderizarProdutos();
+            if (section === 'entregas') renderizarEntregasHoje();
+        }
+        
+        // Dashboard
+        function atualizarDashboard() {
+            const hoje = new Date().toISOString().split('T')[0];
+            const entregasHoje = entregas.filter(e => e.data === hoje);
+            const entregasPendentes = entregasHoje.filter(e => e.status === 'pendente');
+            const naoRetirados = entregasHoje.filter(e => e.status === 'nao-retirado');
+            
+            document.getElementById('total-clientes').textContent = clientes.length;
+            document.getElementById('entregas-hoje').textContent = entregasHoje.length;
+            document.getElementById('entregas-pendentes').textContent = entregasPendentes.length;
+            document.getElementById('nao-retirados').textContent = naoRetirados.length;
+            
+            // Entregas recentes
+            const entregasRecentes = entregas.slice().sort((a, b) => new Date(b.data) - new Date(a.data)).slice(0, 10);
+            const tbody = document.getElementById('entregas-recentes');
+            tbody.innerHTML = '';
+            
+            entregasRecentes.forEach(entrega => {
+                const cliente = clientes.find(c => c.id === entrega.clienteId);
+                if (cliente) {
+                    const produtosTexto = entrega.produtos.map(p => `${p.quantidade}x ${p.nome}`).join(', ');
+                    const statusClass = entrega.status === 'entregue' ? 'status-entregue' : 
+                                      entrega.status === 'nao-retirado' ? 'status-nao-retirado' : 'status-pendente';
+                    
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${cliente.nome}</td>
+                            <td>${produtosTexto.substring(0, 30)}${produtosTexto.length > 30 ? '...' : ''}</td>
+                            <td>${new Date(entrega.data).toLocaleDateString('pt-BR')}</td>
+                            <td><span class="badge status-badge ${statusClass}">${entrega.status}</span></td>
+                        </tr>
+                    `;
+                }
+            });
+        }
+        
+        // Clientes
+        function salvarCliente() {
+            const nome = document.getElementById('cliente-nome').value;
+            const tipo = document.getElementById('cliente-tipo').value;
+            const telefone = document.getElementById('cliente-telefone').value;
+            const endereco = document.getElementById('cliente-endereco').value;
+            const observacoes = document.getElementById('cliente-observacoes').value;
+            
+            if (!nome) {
+                alert('Por favor, informe o nome do cliente/hotel');
+                return;
+            }
+            
+            const novoCliente = {
+                id: clientes.length > 0 ? Math.max(...clientes.map(c => c.id)) + 1 : 1,
+                nome: nome,
+                tipo: tipo,
+                telefone: telefone,
+                endereco: endereco,
+                observacoes: observacoes,
+                dataCadastro: new Date().toISOString().split('T')[0]
+            };
+            
+            clientes.push(novoCliente);
+            salvarClientes();
+            
+            // Fechar modal e limpar formulário
+            bootstrap.Modal.getInstance(document.getElementById('addClienteModal')).hide();
+            document.getElementById('form-cliente').reset();
+            
+            // Atualizar interface
+            renderizarClientes();
+            carregarSelectClientes();
+            atualizarDashboard();
+            
+            alert('Cliente/hotel salvo com sucesso!');
+        }
+        
+        function renderizarClientes() {
+            const tbody = document.getElementById('clientes-table');
+            tbody.innerHTML = '';
+            
+            clientes.forEach(cliente => {
+                // Encontrar última entrega
+                const entregasCliente = entregas.filter(e => e.clienteId === cliente.id);
+                const ultimaEntrega = entregasCliente.length > 0 
+                    ? new Date(Math.max(...entregasCliente.map(e => new Date(e.data)))).toLocaleDateString('pt-BR')
+                    : 'Nenhuma';
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${cliente.nome}</td>
+                        <td><span class="badge customer-type-badge">${cliente.tipo}</span></td>
+                        <td>${cliente.telefone || '-'}</td>
+                        <td>${ultimaEntrega}</td>
+                        <td>${entregasCliente.length > 0 ? 'Ativo' : 'Novo'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="editarCliente(${cliente.id})">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="excluirCliente(${cliente.id})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        
+        function filtrarClientes() {
+            const termo = document.getElementById('search-cliente').value.toLowerCase();
+            const tipo = document.getElementById('filter-tipo-cliente').value;
+            
+            const tbody = document.getElementById('clientes-table');
+            const linhas = tbody.getElementsByTagName('tr');
+            
+            for (let linha of linhas) {
+                const texto = linha.textContent.toLowerCase();
+                const tipoCliente = linha.cells[1].textContent.toLowerCase();
+                
+                const correspondeTermo = texto.includes(termo);
+                const correspondeTipo = tipo === 'todos' || tipoCliente.includes(tipo);
+                
+                linha.style.display = (correspondeTermo && correspondeTipo) ? '' : 'none';
+            }
+        }
+        
+        function resetFiltros() {
+            document.getElementById('search-cliente').value = '';
+            document.getElementById('filter-tipo-cliente').value = 'todos';
+            filtrarClientes();
+        }
+        
+        function editarCliente(id) {
+            alert('Funcionalidade de edição será implementada em breve!');
+        }
+        
+        function excluirCliente(id) {
+            if (confirm('Tem certeza que deseja excluir este cliente/hotel?')) {
+                clientes = clientes.filter(c => c.id !== id);
+                salvarClientes();
+                renderizarClientes();
+                carregarSelectClientes();
+                atualizarDashboard();
+            }
+        }
+        
+        // Produtos
+        function salvarProduto() {
+            const nome = document.getElementById('produto-nome').value;
+            const medida = document.getElementById('produto-medida').value;
+            const preco = parseFloat(document.getElementById('produto-preco').value);
+            const estoque = parseInt(document.getElementById('produto-estoque').value);
+            
+            if (!nome || isNaN(preco) || isNaN(estoque)) {
+                alert('Por favor, preencha todos os campos corretamente');
+                return;
+            }
+            
+            // Verificar se produto já existe
+            const produtoExistente = produtos.find(p => p.nome === nome && p.medida === medida);
+            
+            if (produtoExistente) {
+                produtoExistente.preco = preco;
+                produtoExistente.estoque = estoque;
+            } else {
+                const novoProduto = {
+                    id: produtos.length > 0 ? Math.max(...produtos.map(p => p.id)) + 1 : 1,
+                    nome: nome,
+                    medida: medida,
+                    preco: preco,
+                    estoque: estoque
+                };
+                produtos.push(novoProduto);
+            }
+            
+            salvarProdutos();
+            
+            // Fechar modal e limpar formulário
+            bootstrap.Modal.getInstance(document.getElementById('addProdutoModal')).hide();
+            document.getElementById('form-produto').reset();
+            
+            // Atualizar interface
+            renderizarProdutos();
+            carregarSelectProdutos();
+            
+            alert('Produto salvo com sucesso!');
+        }
+        
+        function renderizarProdutos() {
+            const tbody = document.getElementById('produtos-table');
+            tbody.innerHTML = '';
+            
+            produtos.forEach(produto => {
+                const badgeClass = produto.medida === 'unidade' ? 'badge-unidade' : 
+                                 produto.medida === 'pacote' ? 'badge-pacote' : 'badge-fardo';
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${produto.nome}</td>
+                        <td><span class="badge ${badgeClass}">${produto.medida}</span></td>
+                        <td>R$ ${produto.preco.toFixed(2)}</td>
+                        <td>${produto.estoque}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="editarProduto(${produto.id})">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="excluirProduto(${produto.id})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        
+        function editarProduto(id) {
+            alert('Funcionalidade de edição será implementada em breve!');
+        }
+        
+        function excluirProduto(id) {
+            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                produtos = produtos.filter(p => p.id !== id);
+                salvarProdutos();
+                renderizarProdutos();
+                carregarSelectProdutos();
+            }
+        }
+        
+        // Entregas
+        function carregarSelectClientes() {
+            const select = document.getElementById('entrega-cliente');
+            select.innerHTML = '<option value="">Selecione...</option>';
+            
+            clientes.forEach(cliente => {
+                const option = document.createElement('option');
+                option.value = cliente.id;
+                option.textContent = `${cliente.nome} (${cliente.tipo})`;
+                select.appendChild(option);
+            });
+        }
+        
+        function carregarSelectProdutos() {
+            // Esta função é usada para carregar produtos no modal de entrega
+            const container = document.getElementById('produtos-selecao');
+            container.innerHTML = '';
+            
+            produtos.forEach((produto, index) => {
+                const badgeClass = produto.medida === 'unidade' ? 'badge-unidade' : 
+                                 produto.medida === 'pacote' ? 'badge-pacote' : 'badge-fardo';
+                
+                container.innerHTML += `
+                    <div class="row produto-item mb-2" data-id="${produto.id}">
+                        <div class="col-md-5">
+                            <label class="form-label">${produto.nome} <span class="badge ${badgeClass}">${produto.medida}</span></label>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" class="form-control produto-quantidade" placeholder="Quantidade" min="0" value="0" data-preco="${produto.preco}">
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-text">R$ <span class="produto-total">0.00</span></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Adicionar evento para calcular totais
+            document.querySelectorAll('.produto-quantidade').forEach(input => {
+                input.addEventListener('input', calcularTotalEntrega);
+            });
+        }
+        
+        function adicionarProdutoSelecao() {
+            // Adiciona um novo produto personalizado
+            const container = document.getElementById('produtos-selecao');
+            container.innerHTML += `
+                <div class="row produto-item mb-2">
+                    <div class="col-md-5">
+                        <input type="text" class="form-control produto-nome" placeholder="Nome do produto">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control produto-quantidade" placeholder="Quantidade" min="0" value="0">
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-text">Produto personalizado</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function calcularTotalEntrega() {
+            // Calcula o total da entrega baseado nos produtos selecionados
+            let total = 0;
+            
+            document.querySelectorAll('.produto-item').forEach(item => {
+                const quantidadeInput = item.querySelector('.produto-quantidade');
+                const quantidade = parseInt(quantidadeInput.value) || 0;
+                const preco = parseFloat(quantidadeInput.getAttribute('data-preco')) || 0;
+                const totalItem = quantidade * preco;
+                
+                // Atualizar total do item
+                const totalSpan = item.querySelector('.produto-total');
+                if (totalSpan) {
+                    totalSpan.textContent = totalItem.toFixed(2);
+                }
+                
+                total += totalItem;
+            });
+        }
+        
+        function salvarEntrega() {
+            const clienteId = parseInt(document.getElementById('entrega-cliente').value);
+            const data = document.getElementById('entrega-data').value;
+            const observacoes = document.getElementById('entrega-observacoes').value;
+            
+            if (!clienteId) {
+                alert('Por favor, selecione um cliente/hotel');
+                return;
+            }
+            
+            // Coletar produtos
+            const produtosEntrega = [];
+            document.querySelectorAll('.produto-item').forEach(item => {
+                const quantidadeInput = item.querySelector('.produto-quantidade');
+                const quantidade = parseInt(quantidadeInput.value) || 0;
+                
+                if (quantidade > 0) {
+                    const produtoId = item.getAttribute('data-id');
+                    const produtoNome = produtoId ? 
+                        produtos.find(p => p.id == produtoId)?.nome : 
+                        item.querySelector('.produto-nome')?.value || 'Produto personalizado';
+                    
+                    const preco = parseFloat(quantidadeInput.getAttribute('data-preco')) || 0;
+                    
+                    produtosEntrega.push({
+                        nome: produtoNome,
+                        quantidade: quantidade,
+                        preco: preco
+                    });
+                    
+                    // Atualizar estoque se for um produto cadastrado
+                    if (produtoId) {
+                        const produto = produtos.find(p => p.id == produtoId);
+                        if (produto && produto.estoque >= quantidade) {
+                            produto.estoque -= quantidade;
+                        }
+                    }
+                }
+            });
+            
+            if (produtosEntrega.length === 0) {
+                alert('Por favor, adicione pelo menos um produto à entrega');
+                return;
+            }
+            
+            const novaEntrega = {
+                id: entregas.length > 0 ? Math.max(...entregas.map(e => e.id)) + 1 : 1,
+                clienteId: clienteId,
+                data: data,
+                produtos: produtosEntrega,
+                status: 'pendente',
+                observacoes: observacoes,
+                dataRegistro: new Date().toISOString()
+            };
+            
+            entregas.push(novaEntrega);
+            salvarEntregas();
+            salvarProdutos(); // Salvar alterações no estoque
+            
+            // Fechar modal e limpar formulário
+            bootstrap.Modal.getInstance(document.getElementById('addEntregaModal')).hide();
+            document.getElementById('form-entrega').reset();
+            
+            // Atualizar interface
+            renderizarEntregasHoje();
+            atualizarDashboard();
+            
+            alert('Entrega registrada com sucesso!');
+        }
+        
+        function renderizarEntregasHoje() {
+            const hoje = new Date().toISOString().split('T')[0];
+            const entregasHoje = entregas.filter(e => e.data === hoje);
+            
+            const tbody = document.getElementById('entregas-hoje-table');
+            tbody.innerHTML = '';
+            
+            let totalValor = 0;
+            let totalCocos = 0;
+            let totalCanas = 0;
+            
+            entregasHoje.forEach(entrega => {
+                const cliente = clientes.find(c => c.id === entrega.clienteId);
+                if (!cliente) return;
+                
+                const produtosTexto = entrega.produtos.map(p => `${p.quantidade}x ${p.nome}`).join(', ');
+                const valorEntrega = entrega.produtos.reduce((sum, p) => sum + (p.quantidade * p.preco), 0);
+                totalValor += valorEntrega;
+                
+                // Contar cocos e canas
+                entrega.produtos.forEach(p => {
+                    if (p.nome.includes('Coco')) totalCocos += p.quantidade;
+                    if (p.nome.includes('Cana')) totalCanas += p.quantidade;
+                });
+                
+                const statusClass = entrega.status === 'entregue' ? 'status-entregue' : 
+                                  entrega.status === 'nao-retirado' ? 'status-nao-retirado' : 'status-pendente';
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${cliente.nome}</td>
+                        <td>${produtosTexto}</td>
+                        <td>${entrega.produtos.reduce((sum, p) => sum + p.quantidade, 0)}</td>
+                        <td><span class="badge status-badge ${statusClass}">${entrega.status}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-info" onclick="verDetalhesEntrega(${entrega.id})">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" onclick="marcarEntregue(${entrega.id})">
+                                <i class="bi bi-check"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="marcarNaoRetirado(${entrega.id})">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            // Atualizar resumo do dia
+            const resumoDia = document.getElementById('resumo-dia');
+            resumoDia.innerHTML = `
+                <p><strong>Total de Entregas:</strong> ${entregasHoje.length}</p>
+                <p><strong>Valor Total:</strong> R$ ${totalValor.toFixed(2)}</p>
+                <p><strong>Cocos Vendidos:</strong> ${totalCocos}</p>
+                <p><strong>Canas Vendidas:</strong> ${totalCanas}</p>
+            `;
+            
+            // Atualizar clientes sem retirada
+            const clientesSemRetirada = entregasHoje.filter(e => e.status === 'nao-retirado');
+            const container = document.getElementById('clientes-sem-retirada');
+            container.innerHTML = '';
+            
+            if (clientesSemRetirada.length === 0) {
+                container.innerHTML = '<p class="text-center text-muted">Todos os clientes retiraram suas entregas!</p>';
+            } else {
+                clientesSemRetirada.forEach(entrega => {
+                    const cliente = clientes.find(c => c.id === entrega.clienteId);
+                    if (cliente) {
+                        container.innerHTML += `
+                            <div class="mb-2">
+                                <strong>${cliente.nome}</strong>
+                                <br>
+                                <small>${entrega.produtos.map(p => `${p.quantidade}x ${p.nome}`).join(', ')}</small>
+                            </div>
+                        `;
+                    }
+                });
+            }
+        }
+        
+        function verDetalhesEntrega(id) {
+            const entrega = entregas.find(e => e.id === id);
+            const cliente = clientes.find(c => c.id === entrega.clienteId);
+            
+            if (!entrega || !cliente) return;
+            
+            const produtosList = entrega.produtos.map(p => 
+                `<li>${p.quantidade}x ${p.nome} - R$ ${p.preco.toFixed(2)} cada = R$ ${(p.quantidade * p.preco).toFixed(2)}</li>`
+            ).join('');
+            
+            const total = entrega.produtos.reduce((sum, p) => sum + (p.quantidade * p.preco), 0);
+            
+            const conteudo = document.getElementById('detalhes-entrega-conteudo');
+            conteudo.innerHTML = `
+                <p><strong>Cliente:</strong> ${cliente.nome} (${cliente.tipo})</p>
+                <p><strong>Data:</strong> ${new Date(entrega.data).toLocaleDateString('pt-BR')}</p>
+                <p><strong>Status:</strong> ${entrega.status}</p>
+                <p><strong>Produtos:</strong></p>
+                <ul>${produtosList}</ul>
+                <p><strong>Total:</strong> R$ ${total.toFixed(2)}</p>
+                ${entrega.observacoes ? `<p><strong>Observações:</strong> ${entrega.observacoes}</p>` : ''}
+            `;
+            
+            const modal = new bootstrap.Modal(document.getElementById('detalhesEntregaModal'));
+            modal.show();
+        }
+        
+        function marcarEntregue(id) {
+            const entrega = entregas.find(e => e.id === id);
+            if (entrega) {
+                entrega.status = 'entregue';
+                salvarEntregas();
+                renderizarEntregasHoje();
+                atualizarDashboard();
+            }
+        }
+        
+        function marcarNaoRetirado(id) {
+            const entrega = entregas.find(e => e.id === id);
+            if (entrega) {
+                entrega.status = 'nao-retirado';
+                salvarEntregas();
+                renderizarEntregasHoje();
+                atualizarDashboard();
+            }
+        }
+        
+        function carregarHistoricoCliente() {
+            // Esta função carregaria o histórico do cliente selecionado
+            // Implementação futura
+        }
+        
+        // Lembretes via WhatsApp
+        function enviarLembretes() {
+            const hoje = new Date().toISOString().split('T')[0];
+            const entregasNaoRetiradas = entregas.filter(e => e.data === hoje && e.status === 'nao-retirado');
+            
+            if (entregasNaoRetiradas.length === 0) {
+                alert('Não há clientes sem retirada hoje!');
+                return;
+            }
+            
+            let mensagem = "Olá! Lembramos que sua entrega de hoje ainda não foi retirada:\n\n";
+            
+            entregasNaoRetiradas.forEach(entrega => {
+                const cliente = clientes.find(c => c.id === entrega.clienteId);
+                if (cliente && cliente.telefone) {
+                    const produtosTexto = entrega.produtos.map(p => `${p.quantidade}x ${p.nome}`).join(', ');
+                    const mensagemCliente = `${mensagem}Cliente: ${cliente.nome}\nProdutos: ${produtosTexto}\n\nPor favor, entre em contato para combinar a retirada.`;
+                    
+                    // Abrir WhatsApp com mensagem pré-preparada
+                    const telefoneFormatado = cliente.telefone.replace(/\D/g, '');
+                    window.open(`https://wa.me/55${telefoneFormatado}?text=${encodeURIComponent(mensagemCliente)}`, '_blank');
+                }
+            });
+            
+            alert(`${entregasNaoRetiradas.length} lembrete(s) enviado(s) via WhatsApp!`);
+        }
+        
+        // Relatórios
+        function gerarRelatorioPeriodo() {
+            const dataInicial = document.getElementById('data-inicial').value;
+            const dataFinal = document.getElementById('data-final').value;
+            
+            if (!dataInicial || !dataFinal) {
+                alert('Por favor, selecione o período');
+                return;
+            }
+            
+            const entregasPeriodo = entregas.filter(e => e.data >= dataInicial && e.data <= dataFinal);
+            const clientesPeriodo = [...new Set(entregasPeriodo.map(e => e.clienteId))];
+            
+            let totalValor = 0;
+            let totalProdutos = 0;
+            const produtosVendidos = {};
+            
+            entregasPeriodo.forEach(entrega => {
+                entrega.produtos.forEach(p => {
+                    totalValor += p.quantidade * p.preco;
+                    totalProdutos += p.quantidade;
+                    
+                    if (!produtosVendidos[p.nome]) {
+                        produtosVendidos[p.nome] = 0;
+                    }
+                    produtosVendidos[p.nome] += p.quantidade;
+                });
+            });
+            
+            // Ordenar produtos por quantidade vendida
+            const produtosOrdenados = Object.entries(produtosVendidos)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+            
+            const conteudo = document.getElementById('relatorio-conteudo');
+            conteudo.innerHTML = `
+                <h5>Relatório: ${new Date(dataInicial).toLocaleDateString('pt-BR')} a ${new Date(dataFinal).toLocaleDateString('pt-BR')}</h5>
+                <hr>
+                <p><strong>Total de Entregas:</strong> ${entregasPeriodo.length}</p>
+                <p><strong>Clientes Atendidos:</strong> ${clientesPeriodo.length}</p>
+                <p><strong>Total de Produtos Vendidos:</strong> ${totalProdutos}</p>
+                <p><strong>Valor Total:</strong> R$ ${totalValor.toFixed(2)}</p>
+                
+                <h6 class="mt-3">Top 5 Produtos:</h6>
+                <ol>
+                    ${produtosOrdenados.map(p => `<li>${p[0]}: ${p[1]} unidades</li>`).join('')}
+                </ol>
+            `;
+            
+            // Atualizar relatório de produtos
+            const relatorioProdutos = document.getElementById('relatorio-produtos');
+            let produtosHTML = '<div class="table-responsive"><table class="table"><thead><tr><th>Produto</th><th>Quantidade Vendida</th></tr></thead><tbody>';
+            
+            Object.entries(produtosVendidos).sort((a, b) => b[1] - a[1]).forEach(([nome, quantidade]) => {
+                produtosHTML += `<tr><td>${nome}</td><td>${quantidade}</td></tr>`;
+            });
+            
+            produtosHTML += '</tbody></table></div>';
+            relatorioProdutos.innerHTML = produtosHTML;
+        }
+        
+        // Exportar dados
+        function exportarDados() {
+            const dados = {
+                clientes: clientes,
+                produtos: produtos,
+                entregas: entregas,
+                dataExportacao: new Date().toISOString()
+            };
+            
+            const dadosJSON = JSON.stringify(dados, null, 2);
+            const blob = new Blob([dadosJSON], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup_entregas_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Dados exportados com sucesso!');
+        }
+        
+        // Inicializar sistema
+        window.onload = function() {
+            carregarDados();
+            
+            // Configurar data atual nos campos
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('entrega-data').value = hoje;
+            document.getElementById('data-inicial').value = hoje;
+            document.getElementById('data-final').value = hoje;
+        };
+    </script>
+</body>
+</html>
